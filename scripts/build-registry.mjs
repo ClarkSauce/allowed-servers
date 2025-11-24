@@ -1,4 +1,3 @@
-// scripts/build-registry.mjs
 import fs from "fs";
 import path from "path";
 import url from "url";
@@ -93,6 +92,13 @@ function emitVersionedTree(rootDir, serverResponses, serverList) {
   }
 }
 
+function writeRedirectHtml(filePath, target) {
+  ensureDir(path.dirname(filePath));
+  const html = `<!DOCTYPE html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <meta http-equiv=\"refresh\" content=\"0; url=${target}\" />\n    <title>Redirecting...</title>\n  </head>\n  <body>\n    <p>Redirecting to <a href=\"${target}\">${target}</a></p>\n  </body>\n</html>\n`;
+  fs.writeFileSync(filePath, html, "utf8");
+  console.log("Wrote redirect", filePath, "->", target);
+}
+
 function main() {
   console.log("Building MCP registry JSON…");
 
@@ -109,6 +115,13 @@ function main() {
   // v0 (compat shim)
   const v0Root = path.join(OUT_DIR, "v0");
   emitVersionedTree(v0Root, serverResponses, serverList);
+
+  // / -> /v0.1/
+  writeRedirectHtml(path.join(OUT_DIR, "index.html"), "/v0.1/");
+  // /v0.1/ -> /v0.1/servers
+  writeRedirectHtml(path.join(OUT_DIR, "v0.1", "index.html"), "/v0.1/servers");
+  // /v0/ -> /v0/servers
+  writeRedirectHtml(path.join(OUT_DIR, "v0", "index.html"), "/v0/servers");
 
   console.log("Done. Output in", OUT_DIR);
 }
