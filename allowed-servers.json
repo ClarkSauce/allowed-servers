@@ -1,0 +1,10 @@
+{
+  "servers": [
+    {
+      "id": "playwright-test",
+      "title": "Playwright Test (local MCP)",
+      "description": "Local Playwright MCP server (stdio: `npx playwright run-test-mcp-server`).",
+      "version": "0.0.1"
+    }
+  ]
+}
