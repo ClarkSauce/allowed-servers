@@ -3,8 +3,31 @@
     {
       "id": "playwright-test",
       "title": "Playwright Test (local MCP)",
-      "description": "Local Playwright MCP server (stdio: `npx playwright run-test-mcp-server`).",
-      "version": "0.0.1"
+      "description": "Playwright MCP server for running Playwright tests locally via stdio.",
+      "version": "1.57.0",
+      "websiteUrl": "https://playwright.dev",
+      "repository": {
+        "url": "https://github.com/microsoft/playwright",
+        "source": "github"
+      },
+      "packages": [
+        {
+          "registryType": "npm",
+          "identifier": "playwright",
+          "version": "1.57.0",
+          "runtimeHint": "npx",
+          "runtimeArguments": [],
+          "packageArguments": [
+            {
+              "type": "positional",
+              "value": "run-test-mcp-server"
+            }
+          ],
+          "transport": {
+            "type": "stdio"
+          }
+        }
+      ]
     }
   ]
 }

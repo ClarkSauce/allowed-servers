@@ -7,6 +7,8 @@ const __dirname = path.dirname(__filename);
 
 const CONFIG_PATH = path.join(__dirname, "..", "allowed-servers.json");
 const OUT_DIR = path.join(__dirname, "..", "public"); // Pages root
+const DEFAULT_SCHEMA =
+  "https://static.modelcontextprotocol.io/schemas/2025-10-17/server.schema.json";
 
 function ensureDir(p) {
   fs.mkdirSync(p, { recursive: true });
@@ -31,15 +33,32 @@ function buildRegistryJson(serversConfig) {
   const nowIso = new Date().toISOString();
 
   const serverResponses = serversConfig.map((cfg) => {
-    if (!cfg.id || !cfg.version) {
-      throw new Error("Each server needs at least `id` and `version`");
+    if (!cfg.id || !cfg.version || !cfg.description) {
+      throw new Error(
+        "Each server needs `id`, `version`, and `description` (per MCP registry schema)"
+      );
     }
 
+    const packages =
+      cfg.packages && Array.isArray(cfg.packages) ? cfg.packages : undefined;
+    if ((!packages || packages.length === 0) && !cfg.remotes) {
+      throw new Error(
+        `Server ${cfg.id} must define either \`packages\` (for local installs) or \`remotes\` (for remote transports)`
+      );
+    }
+
+    // Only use fields present in config
     const serverDetail = {
+      $schema: cfg.$schema || DEFAULT_SCHEMA,
       name: cfg.id, // MUST match MCP server ID (e.g. "playwright-test")
-      description: cfg.description || "",
+      description: cfg.description,
       title: cfg.title || cfg.id,
       version: cfg.version,
+      ...(packages ? { packages } : {}),
+      ...(cfg.remotes ? { remotes: cfg.remotes } : {}),
+      ...(cfg.repository ? { repository: cfg.repository } : {}),
+      ...(cfg.websiteUrl ? { websiteUrl: cfg.websiteUrl } : {}),
+      ...(cfg.icons ? { icons: cfg.icons } : {}),
     };
 
     const meta = {
