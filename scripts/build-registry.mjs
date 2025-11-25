@@ -117,11 +117,11 @@ function main() {
   emitVersionedTree(v0Root, serverResponses, serverList);
 
   // / -> /v0.1/
-  writeRedirectHtml(path.join(OUT_DIR, "index.html"), "/v0.1/");
+  writeRedirectHtml(path.join(OUT_DIR, "index.html"), "v0.1/");
   // /v0.1/ -> /v0.1/servers
-  writeRedirectHtml(path.join(OUT_DIR, "v0.1", "index.html"), "/v0.1/servers");
+  writeRedirectHtml(path.join(OUT_DIR, "v0.1", "index.html"), "servers");
   // /v0/ -> /v0/servers
-  writeRedirectHtml(path.join(OUT_DIR, "v0", "index.html"), "/v0/servers");
+  writeRedirectHtml(path.join(OUT_DIR, "v0", "index.html"), "servers");
 
   console.log("Done. Output in", OUT_DIR);
 }
